@@ -5,7 +5,7 @@
 dagArtifact:
   enabled: true
 
-  repo: https://github.com/rubenkam/gitops-airflow
+  repo: https://github.com/rubenkam/sync-alternative
   commit: main
   subPath: dags
 
