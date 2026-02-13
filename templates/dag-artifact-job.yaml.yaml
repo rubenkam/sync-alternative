@@ -1,0 +1,42 @@
+{{- if .Values.dagArtifact.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "airflow-wrapper.fullname" . }}-dag-artifact-{{ .Release.Revision }}
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation
+spec:
+  template:
+    spec:
+      serviceAccountName: {{ include "airflow-wrapper.fullname" . }}-dag-artifact
+      restartPolicy: Never
+
+      containers:
+        - name: dag-artifact-builder
+          image: {{ .Values.dagArtifact.job.image }}
+          imagePullPolicy: {{ .Values.dagArtifact.job.imagePullPolicy }}
+          command:
+            - sh
+            - -c
+            - |
+              set -e
+
+              echo "Cloning DAG repo..."
+              git clone {{ .Values.dagArtifact.repo }} /repo
+              cd /repo
+              git checkout {{ .Values.dagArtifact.commit }}
+
+              mkdir -p /workspace/dags
+              cp -r {{ .Values.dagArtifact.subPath }}/* /workspace/dags/
+
+              cd /workspace
+              tar -czf dags.tar.gz dags
+
+              echo "Creating ConfigMap artifact..."
+              kubectl create configmap {{ .Values.dagArtifact.artifact.name }} \
+                --from-file=dags.tar.gz \
+                --dry-run=client -o yaml | kubectl apply -f -
+
+      terminationGracePeriodSeconds: 30
+{{- end }}
