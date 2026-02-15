@@ -2,7 +2,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ include "airflow-wrapper.fullname" . }}-dag-artifact-{{ .Values.dagArtifact.commit | trunc 8 | replace "." "-" }}
+  name: {{ .Release.Name }}-dag-artifact-{{ .Values.dagArtifact.commit | trunc 8 | replace "." "-" }}
   annotations:
     argocd.argoproj.io/sync-wave: "-1"
     argocd.argoproj.io/sync-options: Replace=true
@@ -10,7 +10,7 @@ spec:
   ttlSecondsAfterFinished: 300
   template:
     spec:
-      serviceAccountName: {{ include "airflow-wrapper.fullname" . }}-dag-artifact
+      serviceAccountName: {{ .Release.Name }}-dag-artifact
       restartPolicy: Never
 
       containers:
