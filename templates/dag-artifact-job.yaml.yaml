@@ -2,12 +2,12 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ include "airflow-wrapper.fullname" . }}-dag-artifact-{{ .Release.Revision }}
+  name: {{ include "airflow-wrapper.fullname" . }}-dag-artifact-{{ .Values.dagArtifact.commit | trunc 8 | replace "." "-" }}
   annotations:
     argocd.argoproj.io/sync-wave: "-1"
-    # "helm.sh/hook": post-install,post-upgrade
-    # "helm.sh/hook-delete-policy": before-hook-creation
+    argocd.argoproj.io/sync-options: Replace=true
 spec:
+  ttlSecondsAfterFinished: 300
   template:
     spec:
       serviceAccountName: {{ include "airflow-wrapper.fullname" . }}-dag-artifact
@@ -38,6 +38,5 @@ spec:
               kubectl create configmap {{ .Values.dagArtifact.artifact.name }} \
                 --from-file=dags.tar.gz \
                 --dry-run=client -o yaml | kubectl apply -f -
-
       terminationGracePeriodSeconds: 30
 {{- end }}

@@ -14,7 +14,7 @@ dagArtifact:
     name: airflow-dag-artifact
 
   job:
-    image: alpine/git:latest
+    image: alpine/k8s:1.29.2
     imagePullPolicy: IfNotPresent
 
 ############################################################
