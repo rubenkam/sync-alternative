@@ -10,7 +10,7 @@ spec:
   ttlSecondsAfterFinished: 300
   template:
     spec:
-      serviceAccountName: {{ .Release.Name }}-dag-artifact
+      serviceAccountName: sync-airflow-dag-artifact
       restartPolicy: Never
 
       containers:

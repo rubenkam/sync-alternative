@@ -2,13 +2,15 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: {{ .Release.Name }}-dag-artifact
+  name: sync-airflow-dag-artifact
+  namespace: airflow
 
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: {{ .Release.Name }}-dag-artifact
+  name: sync-airflow-dag-artifact
+  namespace: airflow
 rules:
   - apiGroups: [""]
     resources: ["configmaps"]
@@ -18,12 +20,14 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: {{ .Release.Name }}-dag-artifact
+  name: sync-airflow-dag-artifact
+  namespace: airflow
 subjects:
   - kind: ServiceAccount
-    name: {{ .Release.Name }}-dag-artifact
+    name: sync-airflow-dag-artifact
+    namespace: airflow
 roleRef:
   kind: Role
-  name: {{ .Release.Name }}-dag-artifact
+  name: sync-airflow-dag-artifact
   apiGroup: rbac.authorization.k8s.io
 {{- end }}
