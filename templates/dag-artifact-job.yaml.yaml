@@ -4,8 +4,9 @@ kind: Job
 metadata:
   name: {{ include "airflow-wrapper.fullname" . }}-dag-artifact-{{ .Release.Revision }}
   annotations:
-    "helm.sh/hook": post-install,post-upgrade
-    "helm.sh/hook-delete-policy": before-hook-creation
+    argocd.argoproj.io/sync-wave: "-1"
+    # "helm.sh/hook": post-install,post-upgrade
+    # "helm.sh/hook-delete-policy": before-hook-creation
 spec:
   template:
     spec:
