@@ -65,7 +65,7 @@ airflow:
         - -c
         - |
           mkdir -p /opt/airflow/dags
-          cp -r /artifact/* /opt/airflow/dags/
+          tar -xzf /artifact/dags.tar.gz -C /opt/airflow/dags
       volumeMounts:
         - name: dags
           mountPath: /opt/airflow/dags
