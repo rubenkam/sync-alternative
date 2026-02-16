@@ -44,34 +44,6 @@ airflow:
     core:
       dags_folder: /opt/airflow/dags
 
-  # This injects DAGs into all pods
-  extraVolumes:
-    - name: dags
-      emptyDir: {}
-
-    - name: dag-artifact
-      configMap:
-        name: airflow-dag-artifact
-
-  extraVolumeMounts:
-    - name: dags
-      mountPath: /opt/airflow/dags
-
-  extraInitContainers:
-    - name: extract-dags
-      image: alpine:latest
-      command:
-        - sh
-        - -c
-        - |
-          mkdir -p /opt/airflow/dags
-          tar -xzf /artifact/dags.tar.gz -C /opt/airflow/dags
-      volumeMounts:
-        - name: dags
-          mountPath: /opt/airflow/dags
-        - name: dag-artifact
-          mountPath: /artifact
-
   triggerer:
     persistence:
       enabled: true
@@ -87,3 +59,56 @@ airflow:
 
   migrateDatabaseJob:
     useHelmHooks: false
+    scheduler:
+    extraVolumes:
+      - name: dags
+        emptyDir: {}
+      - name: dag-artifact
+        configMap:
+          name: airflow-dag-artifact
+
+    extraVolumeMounts:
+      - name: dags
+        mountPath: /opt/airflow/dags
+
+    extraInitContainers:
+      - name: extract-dags
+        image: alpine:latest
+        command:
+          - sh
+          - -c
+          - |
+            mkdir -p /opt/airflow/dags
+            tar -xzf /artifact/dags.tar.gz -C /opt/airflow/dags
+        volumeMounts:
+          - name: dags
+            mountPath: /opt/airflow/dags
+          - name: dag-artifact
+            mountPath: /artifact
+
+  webserver:
+    extraVolumes:
+      - name: dags
+        emptyDir: {}
+      - name: dag-artifact
+        configMap:
+          name: airflow-dag-artifact
+
+    extraVolumeMounts:
+      - name: dags
+        mountPath: /opt/airflow/dags
+
+    extraInitContainers:
+      - name: extract-dags
+        image: alpine:latest
+        command:
+          - sh
+          - -c
+          - |
+            mkdir -p /opt/airflow/dags
+            tar -xzf /artifact/dags.tar.gz -C /opt/airflow/dags
+        volumeMounts:
+          - name: dags
+            mountPath: /opt/airflow/dags
+          - name: dag-artifact
+            mountPath: /artifact
