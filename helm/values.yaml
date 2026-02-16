@@ -75,7 +75,7 @@ airflow:
 
     extraInitContainers:
       - name: extract-dags
-        image: bitnami/kubectl:latest
+        image: alpine:latest
         command:
           - sh
           - -c
