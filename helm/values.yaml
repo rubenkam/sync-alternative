@@ -89,6 +89,7 @@ airflow:
             mkdir -p /workspace/dags
             for f in /artifact/*; do
               if [ -f "$f" ] && echo "$f" | grep -qE "\.py$"; then
+                echo "Copying $f to /workspace/dags"
                 cp "$f" /workspace/dags/
               fi
             done
