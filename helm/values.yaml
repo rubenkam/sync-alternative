@@ -103,16 +103,16 @@ airflow:
             mkdir -p /opt/airflow/dags
             for f in /artifact/*; do
               if [ -f "$f" ] && echo "$f" | grep -qE "\.py$"; then
-                echo "Copying $f to /opt/airflow/dags"
+                echo "Copying $f -> /opt/airflow/dags"
                 cp -L "$f" /opt/airflow/dags/
               fi
             done
             echo "DAGs copied to /opt/airflow/dags"
         volumeMounts:
-          - name: dags
-            mountPath: /opt/airflow/dags
           - name: dag-artifact
             mountPath: /artifact
+          - name: dags
+            mountPath: /opt/airflow/dags
 
   # webserver:
   #   extraVolumes:

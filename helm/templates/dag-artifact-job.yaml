@@ -18,30 +18,24 @@ spec:
           image: {{ .Values.dagArtifact.job.image }}
           imagePullPolicy: {{ .Values.dagArtifact.job.imagePullPolicy }}
           command:
-            - sh
-            - -c
-            - |
-              set -e
+          - sh
+          - -c
+          - |
+            set -e
+            echo "Cloning DAG repo..."
+            git clone {{ .Values.dagArtifact.repo }} /repo
+            cd /repo
+            git checkout {{ .Values.dagArtifact.commit }}
 
-              echo "Cloning DAG repo..."
-              git clone {{ .Values.dagArtifact.repo }} /repo
-              cd /repo
-              git checkout {{ .Values.dagArtifact.commit }}
+            mkdir -p /workspace/dags
 
-              mkdir -p /workspace/dags
+            echo "Copying python files to /workspace/dags..."
+            find {{ .Values.dagArtifact.subPath }} -type f -name "*.py" -exec cp {} /workspace/dags/ \;
 
-              # Copy only python files
-              find {{ .Values.dagArtifact.subPath }} -name "*.py" -exec cp {} /workspace/dags/ \;
-
-              cd /workspace
-
-              # Remove old archive if exists
-              rm -f dags.tar.gz
-
-              echo "Creating ConfigMap artifact..."
-              kubectl create configmap {{ .Values.dagArtifact.artifact.name }} \
-                --from-file=/workspace/dags/ \
-                --dry-run=client -o yaml | kubectl apply -f -
+            echo "Creating ConfigMap..."
+            kubectl create configmap {{ .Values.dagArtifact.artifact.name }} \
+              --from-file=/workspace/dags/ \
+              --dry-run=client -o yaml | kubectl apply -f -
 
 
       terminationGracePeriodSeconds: 30
