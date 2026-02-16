@@ -47,7 +47,7 @@ airflow:
 
   config:
     core:
-      dags_folder: /opt/airflow/dags
+      dags_folder: /workspace/dags
       store_serialized_dags: True
 
   triggerer:
@@ -76,7 +76,7 @@ airflow:
 
     extraVolumeMounts:
       - name: dags
-        mountPath: /opt/airflow/dags
+        mountPath: /workspace/dags
 
     extraInitContainers:
       - name: extract-dags
@@ -84,10 +84,10 @@ airflow:
         command:
           - sh
           - -c
-          - cp -a /artifact/*.py /opt/airflow/dags
+          - cp -a /artifact/*.py /workspace/dags
         volumeMounts:
           - name: dags
-            mountPath: /opt/airflow/dags
+            mountPath: /workspace/dags
           - name: dag-artifact
             mountPath: /artifact
 
