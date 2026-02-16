@@ -43,6 +43,7 @@ airflow:
   config:
     core:
       dags_folder: /opt/airflow/dags
+      store_serialized_dags: True
 
   triggerer:
     persistence:
@@ -88,6 +89,8 @@ airflow:
             mountPath: /opt/airflow/dags
           - name: dag-artifact
             mountPath: /artifact
+    min_file_process_interval: 5
+    dag_dir_list_interval: 10
 
   webserver:
     extraVolumes:
