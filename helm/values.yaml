@@ -80,7 +80,9 @@ airflow:
           - -c
           - |
             mkdir -p /opt/airflow/dags
-            tar -xzf /artifact/dags.tar.gz -C /opt/airflow/dags
+            tar -xzf /artifact/dags.tar.gz \
+            -C /opt/airflow/dags \
+            --strip-components=1
         volumeMounts:
           - name: dags
             mountPath: /opt/airflow/dags
@@ -107,7 +109,9 @@ airflow:
           - -c
           - |
             mkdir -p /opt/airflow/dags
-            tar -xzf /artifact/dags.tar.gz -C /opt/airflow/dags
+            tar -xzf /artifact/dags.tar.gz \
+            -C /opt/airflow/dags \
+            --strip-components=1
         volumeMounts:
           - name: dags
             mountPath: /opt/airflow/dags
