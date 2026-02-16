@@ -24,8 +24,13 @@ dagArtifact:
 airflow:
 
   useStandardNaming: true
-
+  
   executor: KubernetesExecutor
+
+  airflow:
+  secrets:
+    fernetKey:
+      create: true
 
   postgresql:
     image:
