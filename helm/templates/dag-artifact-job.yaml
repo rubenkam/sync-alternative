@@ -29,14 +29,20 @@ spec:
               git checkout {{ .Values.dagArtifact.commit }}
 
               mkdir -p /workspace/dags
-              cp -r {{ .Values.dagArtifact.subPath }}/* /workspace/dags/
+
+              # Copy only python files
+              find {{ .Values.dagArtifact.subPath }} -name "*.py" -exec cp {} /workspace/dags/ \;
 
               cd /workspace
-              tar -czf dags.tar.gz dags
+
+              # Remove old archive if exists
+              rm -f dags.tar.gz
 
               echo "Creating ConfigMap artifact..."
               kubectl create configmap {{ .Values.dagArtifact.artifact.name }} \
-                --from-file=dags.tar.gz \
+                --from-file=/workspace/dags/ \
                 --dry-run=client -o yaml | kubectl apply -f -
+
+
       terminationGracePeriodSeconds: 30
 {{- end }}

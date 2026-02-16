@@ -79,11 +79,7 @@ airflow:
         command:
           - sh
           - -c
-          - |
-            mkdir -p /opt/airflow/dags
-            tar -xzf /artifact/dags.tar.gz \
-            -C /opt/airflow/dags \
-            --strip-components=1
+          - cp -a /artifact/*.py /opt/airflow/dags
         volumeMounts:
           - name: dags
             mountPath: /opt/airflow/dags
