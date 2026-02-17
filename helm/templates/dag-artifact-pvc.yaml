@@ -1,0 +1,15 @@
+{{- if .Values.dagArtifact.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: airflow-dag-artifact-pvc
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: standard
+{{- end }}

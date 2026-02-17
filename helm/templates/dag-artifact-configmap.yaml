@@ -1,7 +1,0 @@
-{{- if .Values.dagArtifact.enabled }}
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ .Values.dagArtifact.artifact.name }}
-data: {}
-{{- end }}

@@ -2,41 +2,46 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ .Release.Name }}-dag-artifact-{{ .Values.dagArtifact.commit | trunc 8 | replace "." "-" }}
+  name: {{ .Release.Name }}-dag-artifact-{{ .Values.dagArtifact.version | replace "." "-" }}
   annotations:
     argocd.argoproj.io/sync-wave: "-1"
     argocd.argoproj.io/sync-options: Replace=true
 spec:
-  ttlSecondsAfterFinished: 300
+  backoffLimit: 1
   template:
     spec:
-      serviceAccountName: sync-airflow-dag-artifact
       restartPolicy: Never
 
       containers:
         - name: dag-artifact-builder
-          image: {{ .Values.dagArtifact.job.image }}
-          imagePullPolicy: {{ .Values.dagArtifact.job.imagePullPolicy }}
+          image: alpine/git:latest
           command:
-          - sh
-          - -c
-          - |
-            set -e
-            echo "Cloning DAG repo..."
-            git clone {{ .Values.dagArtifact.repo }} /repo
-            cd /repo
-            git checkout {{ .Values.dagArtifact.commit }}
+            - sh
+            - -c
+            - |
+              set -euo pipefail
 
-            mkdir -p /workspace/dags
+              echo "Cloning DAG repository..."
+              git clone --branch {{ .Values.dagArtifact.branch }} {{ .Values.dagArtifact.repo }} /repo
+              cd /repo
 
-            echo "Copying python files to /workspace/dags..."
-            find {{ .Values.dagArtifact.subPath }} -type f -name "*.py" -exec cp {} /workspace/dags/ \;
+              echo "Checking out tag {{ .Values.dagArtifact.version }}..."
+              git checkout tags/{{ .Values.dagArtifact.version }}
 
-            echo "Creating ConfigMap..."
-            kubectl create configmap {{ .Values.dagArtifact.artifact.name }} \
-              --from-file=/workspace/dags/ \
-              --dry-run=client -o yaml | kubectl apply -f -
+              echo "Cleaning existing DAGs..."
+              rm -rf /artifact/*
 
+              echo "Copying DAGs to PVC..."
+              cp -r dags/* /artifact/
 
-      terminationGracePeriodSeconds: 30
+              echo "DAG artifact update complete."
+
+      volumeMounts:
+        - name: dag-artifact
+          mountPath: /artifact
+
+      volumes:
+        - name: dag-artifact
+          persistentVolumeClaim:
+            claimName: {{ .Values.dagArtifact.pvc.name }}
 {{- end }}
