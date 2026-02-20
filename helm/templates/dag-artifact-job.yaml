@@ -33,7 +33,7 @@ spec:
               rm -rf /artifact/*
 
               echo "Copying DAGs to PVC..."
-              cp -r dags/* /artifact/
+              find {{ .Values.dagArtifact.subPath }} -type f -name "*.py" -exec cp {} /artifact/ \;
 
               echo "DAG artifact update complete."
 
