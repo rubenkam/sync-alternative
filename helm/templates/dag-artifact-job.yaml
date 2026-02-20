@@ -36,8 +36,7 @@ spec:
               echo "Copying DAGs directly into PVC root"
               find {{ .Values.dagArtifact.subPath }} -type f -name "*.py" -exec cp {} /artifact/ \;
 
-              chown airflow: /artifact/*.py
-              chmod 644 /artifact/*.py
+              chmod 777 /artifact/*.py
 
               echo "DAG artifact update complete."
 
