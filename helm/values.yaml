@@ -55,26 +55,23 @@ airflow:
 
     extraVolumeMounts:
       - name: dag-artifact
-        mountPath: /opt/airflow/dags
-      - name: dags
-        mountPath: /opt/airflow/dags
+        mountPath: /opt/airflow/dags-artifact 
 
     podAnnotations:
       dag-version: "{{ .Values.dagArtifact.version }}"
       argocd.argoproj.io/sync-wave: "2"
 
     extraInitContainers:
-      - name: copy-dags-to-airflow
+      - name: copy-dags
         image: alpine:latest
         command:
           - sh
           - -c
           - |
-            echo "Copying DAGs from PVC to /opt/airflow/dags..."
-            cp /artifact/*.py /opt/airflow/dags/
+            cp /opt/airflow/dags-artifact/*.py /opt/airflow/dags/
         volumeMounts:
           - name: dag-artifact
-            mountPath: /artifact
+            mountPath: /opt/airflow/dags-artifact
           - name: dags
             mountPath: /opt/airflow/dags
         securityContext:
