@@ -26,7 +26,8 @@ spec:
               cd /repo
 
               echo "Checking out tag {{ .Values.dagArtifact.version }}..."
-              git checkout tags/{{ .Values.dagArtifact.version }}
+              git fetch --tags
+              git checkout {{ .Values.dagArtifact.version }}
 
               echo "Cleaning existing DAGs..."
               rm -rf /artifact/*
