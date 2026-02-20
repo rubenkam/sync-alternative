@@ -35,6 +35,8 @@ spec:
               echo "Copying DAGs to PVC..."
               find {{ .Values.dagArtifact.subPath }} -type f -name "*.py" -exec cp {} /artifact/ \;
 
+              chmod -R 777 /artifact/*.py
+
               echo "DAG artifact update complete."
 
           volumeMounts:
