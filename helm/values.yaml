@@ -50,13 +50,35 @@ airflow:
       - name: dag-artifact
         persistentVolumeClaim:
           claimName: airflow-dag-artifact-pvc
+      - name: dags
+        emptyDir: {} 
 
     extraVolumeMounts:
       - name: dag-artifact
         mountPath: /opt/airflow/dags
+      - name: dags
+        mountPath: /opt/airflow/dags
 
     podAnnotations:
       dag-version: "{{ .Values.dagArtifact.version }}"
+
+    extraInitContainers:
+      - name: copy-dags-to-airflow
+        image: alpine:latest
+        command:
+          - sh
+          - -c
+          - |
+            echo "Copying DAGs from PVC to /opt/airflow/dags..."
+            cp /artifact/*.py /opt/airflow/dags/
+        volumeMounts:
+          - name: dag-artifact
+            mountPath: /artifact
+          - name: dags
+            mountPath: /opt/airflow/dags
+        securityContext:
+          runAsUser: 50000   # Airflow user UID in most images
+          runAsGroup: 50000
 
   workers:
     extraVolumes:
