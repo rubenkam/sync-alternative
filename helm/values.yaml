@@ -61,6 +61,7 @@ airflow:
 
     podAnnotations:
       dag-version: "{{ .Values.dagArtifact.version }}"
+      argocd.argoproj.io/sync-wave: "2"
 
     extraInitContainers:
       - name: copy-dags-to-airflow
