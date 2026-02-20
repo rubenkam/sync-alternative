@@ -33,6 +33,12 @@ airflow:
     fernetKey:
       create: true
 
+  postgresql:
+  image:
+    registry: docker.io
+    repository: bitnami/postgresql
+    tag: latest
+
   dags:
     persistence:
       enabled: false
