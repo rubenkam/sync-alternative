@@ -7,7 +7,7 @@ dagArtifact:
 
   repo: https://github.com/rubenkam/sync-alternative
   branch: dags
-  version: 1.0.0   # Git tag to deploy
+  version: v1.0.0   # Git tag to deploy
 
   pvc:
     name: airflow-dag-artifact-pvc
