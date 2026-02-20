@@ -37,9 +37,9 @@ spec:
 
               echo "DAG artifact update complete."
 
-      volumeMounts:
-        - name: dag-artifact
-          mountPath: /artifact
+          volumeMounts:
+            - name: dag-artifact
+              mountPath: /artifact
 
       volumes:
         - name: dag-artifact
