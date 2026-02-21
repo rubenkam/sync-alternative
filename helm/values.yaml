@@ -40,7 +40,6 @@ airflow:
       tag: latest
 
   dags:
-    path: /opt/airflow/dags
     persistence:
       enabled: true
       existingClaim: airflow-dag-artifact-pvc
