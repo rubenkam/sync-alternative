@@ -40,50 +40,15 @@ airflow:
       tag: latest
 
   dags:
+    path: /opt/airflow/dags
     persistence:
-      enabled: false
+      enabled: true
+      existingClaim: airflow-dag-artifact-pvc
+      accessMode: ReadWriteOnce   # fine for single-node local-path
     gitSync:
       enabled: false
 
   scheduler:
-    extraVolumes:
-      - name: dag-artifact
-        persistentVolumeClaim:
-          claimName: airflow-dag-artifact-pvc
-      - name: dags
-        emptyDir: {} 
-
-    extraVolumeMounts:
-      - name: dag-artifact
-        mountPath: /opt/airflow/dags-artifact 
-
     podAnnotations:
       dag-version: "{{ .Values.dagArtifact.version }}"
       argocd.argoproj.io/sync-wave: "2"
-
-    extraInitContainers:
-      - name: copy-dags
-        image: alpine:latest
-        command:
-          - sh
-          - -c
-          - |
-            cp /opt/airflow/dags-artifact/*.py /opt/airflow/dags/
-        volumeMounts:
-          - name: dag-artifact
-            mountPath: /opt/airflow/dags-artifact
-          - name: dags
-            mountPath: /opt/airflow/dags
-        securityContext:
-          runAsUser: 50000   # Airflow user UID in most images
-          runAsGroup: 50000
-
-  workers:
-    extraVolumes:
-      - name: dag-artifact
-        persistentVolumeClaim:
-          claimName: airflow-dag-artifact-pvc
-
-    extraVolumeMounts:
-      - name: dag-artifact
-        mountPath: /opt/airflow/dags
