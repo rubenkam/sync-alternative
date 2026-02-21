@@ -51,10 +51,10 @@ airflow:
 
   scheduler:
     podAnnotations:
-      dag-version: "{{ .Values.dagArtifact.version }}"
+      dag-version: {{ .Values.dagArtifact.version }}
       argocd.argoproj.io/sync-wave: "1"
 
   webserver:
     podAnnotations:
-      dag-version: "{{ .Values.dagArtifact.version }}"
+      dag-version: {{ .Values.dagArtifact.version }}
       argocd.argoproj.io/sync-wave: "2"
