@@ -24,6 +24,13 @@ airflow:
   useStandardNaming: true
   executor: KubernetesExecutor
 
+  extraEnv:
+    - name: AIRFLOW__WEBSERVER__SECRET_KEY
+      valueFrom:
+        secretKeyRef:
+          name: airflow-webserver-secret-key
+          key: value
+
   config:
     core:
       dags_folder: /opt/airflow/dags
