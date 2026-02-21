@@ -7,7 +7,7 @@ dagArtifact:
 
   repo: https://github.com/rubenkam/sync-alternative
   branch: dags
-  version: v1.0.1   # Git tag to deploy
+  version: v1.0.3   # Git tag to deploy
 
   pvc:
     name: airflow-dag-artifact-pvc
@@ -25,7 +25,7 @@ airflow:
   executor: KubernetesExecutor
 
   webserverSecretKey: "super-stable-secret-key-123"
-  
+
   config:
     core:
       dags_folder: /opt/airflow/dags
