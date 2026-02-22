@@ -58,3 +58,4 @@ airflow:
     podAnnotations:
       dag-version: "v1.0.5"
       #argocd.argoproj.io/sync-wave: "2"
+      #replicas: 2 -- two replicas makes updates run smoother
