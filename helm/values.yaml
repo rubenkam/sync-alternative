@@ -54,7 +54,7 @@ airflow:
       dag-version: "v1.0.4"
       #argocd.argoproj.io/sync-wave: "1"
 
-  webserver:
+  apiServer:
     podAnnotations:
       dag-version: "v1.0.4"
-      argocd.argoproj.io/sync-wave: "1"
+      #argocd.argoproj.io/sync-wave: "1"
